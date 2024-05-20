@@ -122,6 +122,12 @@ div::-webkit-scrollbar-thumb {
 	background-color: #E3E3E3;
 	cursor: pointer
 }
+/* サイドバー */
+/* 現在選択しているアイディアテーマ*/
+.idea_title_item.selected {
+    background-color: #E3E3E3;
+}
+
 
 .idea_title_text {
 	font-size: 14px;

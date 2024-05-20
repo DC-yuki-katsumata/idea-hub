@@ -320,6 +320,15 @@
 				// クリックされた要素が.idea_title_itemの場合に処理を行う
 				if (event.target.closest(".idea_title_item")) {
 					const item = event.target.closest(".idea_title_item");
+
+					// 既存の選択を解除
+					document.querySelectorAll('.idea_title_item').forEach(function (el) {
+						el.classList.remove('selected');
+					});
+
+					// 選択されたアイテムに.selectedクラスを追加
+					item.classList.add('selected');
+
 					selectedThemeId = item.dataset.id;
 					fetch(`/ideas/${selectedThemeId}`)
 						.then(response => response.json())
