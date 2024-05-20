@@ -74,6 +74,7 @@ public class MyController {
 		return ideaText;
 	}
 
+
 	// すべてのアイディアテーマを取得
 	@GetMapping("/idea")
 	public String getThemes(Model model) {

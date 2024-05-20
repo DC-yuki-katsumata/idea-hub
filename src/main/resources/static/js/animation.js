@@ -1,7 +1,7 @@
 /**
  * 
  */// TextTypingというクラス名がついている子要素（span）を表示から非表示にする定義
-function TextTypingAnime() {
+function TextTypingAnime(animationTime = 100) {
 	$('.TextTyping').each(function() {
 		var elemPos = $(this).offset().top - 50;
 		var scroll = $(window).scrollTop();
@@ -11,7 +11,7 @@ function TextTypingAnime() {
 			thisChild = $(this).children(); // spanタグを取得
 			// spanタグの要素の1つ1つに処理を追加
 			thisChild.each(function(i) {
-				var time = 30;
+				var time = animationTime;
                 // 時差で表示するためにdelayを指定し、その時間後にdisplayとopacityをアニメーションで変更
                 $(this).delay(time * i).queue(function(next) {
                     $(this).css('display', 'inline').css('opacity', 0).animate({'opacity': 1}, time, function() {
