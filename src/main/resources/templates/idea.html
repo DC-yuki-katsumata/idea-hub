@@ -312,6 +312,24 @@
 			var searchInput = document.getElementById("search-input");
 			var searchButton = document.getElementById("search-button");
 			var resetButton = document.getElementById("reset-button"); // リセットボタンの要素を取得
+			let selectedThemeId = null;　//選択しているアイディアのテーマ
+
+
+			// アイディアテーマをクリックしたときの処理
+			document.querySelector(".history").addEventListener("click", function (event) {
+				// クリックされた要素が.idea_title_itemの場合に処理を行う
+				if (event.target.closest(".idea_title_item")) {
+					const item = event.target.closest(".idea_title_item");
+					selectedThemeId = item.dataset.id;
+					fetch(`/ideas/${selectedThemeId}`)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data);
+							displayIdeas(data);
+						})
+						.catch(error => console.error('Error:', error));
+				}
+			});
 
 			searchButton.addEventListener("click", function () {
 				var query = searchInput.value;
@@ -363,32 +381,39 @@
 			}
 
 
-			var form = document.getElementsByClassName("message_box")[0];
-			form.addEventListener("submit", function (e) {
+			// アイディアを送信したときの処理
+			document.querySelector(".message_box").addEventListener("submit", function (e) {
 				e.preventDefault();
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "/idea", true);
-				xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-				xhr.onload = function () {
-					if (xhr.status >= 200 && xhr.status < 300) {
-						const ideaText = xhr.responseText;
-						displayIdea(ideaText);
-					} else {
-						alert("Error!");
-					}
-				};
-
-				xhr.onerror = function () {
-					alert("Error!");
-				};
-
-				var data = JSON.stringify({idea: document.getElementById("message-input").value});
-				xhr.send(data);
+				const ideaText = document.getElementById("message-input").value;
+				console.log(ideaText);
+				if (selectedThemeId && ideaText.trim()) {
+					fetch('/idea', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ idea: ideaText, themeId: selectedThemeId })
+					})
+						.then(response => response.json())
+						.then(data => {
+							displayIdea(data);
+						})
+						.catch(error => console.error('Error:', error));
+				}
 			});
 
-			
-			function displayIdea(ideaText) {
+			// アイディアを表示する関数
+			function displayIdeas(ideas) {
+				const messageContainer = document.getElementById('message-container');
+				messageContainer.innerHTML = "";
+				ideas.forEach(idea => {
+					displayIdea(idea);
+				});
+			}
+
+
+			function displayIdea(idea) {
+				const ideaText = idea.text; // 受け取ったデータのtextプロパティを使用
 				const messageContainer = document.getElementById('message-container');
 				const messageBox = document.createElement('div');
 				messageBox.classList.add('idea-box', 'TextTyping');
@@ -408,6 +433,7 @@
 				TextTypingAnime(30);
 				document.getElementById("message-input").value = "";
 			}
+
 
 			var newIdea = document.querySelector(".new_idea");
 			var centerInput = document.getElementById("center-input");
@@ -474,7 +500,7 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({title: theme, description: ''})
+				body: JSON.stringify({ title: theme, description: '' })
 			})
 				.then(response => response.json())
 				.then(data => {
@@ -505,7 +531,6 @@
 					contextMenu.style.display = "none";
 				}
 			});
-
 
 			document.getElementById("rename").addEventListener("click", function () {
 				alert("名前を変更");

@@ -48,17 +48,17 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
         // Ideaインスタンスの作成と保存
-        Idea i1 = new Idea("新しいエコ素材", LocalDateTime.now(), "竹を使った紙袋がいいと思います。");
-        Idea i2 = new Idea("再生可能エネルギー", LocalDateTime.now(), "風力発電の効率を上げる方法を研究する。");
-        Idea i3 = new Idea("プラスチック削減", LocalDateTime.now(), "生分解性プラスチックの利用を促進する。");
-        Idea i4 = new Idea("水資源管理", LocalDateTime.now(), "雨水の再利用システムを導入する。");
-        Idea i5 = new Idea("都市農業", LocalDateTime.now(), "都市内の空き地で野菜を栽培するプロジェクト。");
+        // Idea i1 = new Idea("新しいエコ素材", LocalDateTime.now(), "竹を使った紙袋がいいと思います。");
+        // Idea i2 = new Idea("再生可能エネルギー", LocalDateTime.now(), "風力発電の効率を上げる方法を研究する。");
+        // Idea i3 = new Idea("プラスチック削減", LocalDateTime.now(), "生分解性プラスチックの利用を促進する。");
+        // Idea i4 = new Idea("水資源管理", LocalDateTime.now(), "雨水の再利用システムを導入する。");
+        // Idea i5 = new Idea("都市農業", LocalDateTime.now(), "都市内の空き地で野菜を栽培するプロジェクト。");
 
-        ideaRepository.save(i1);
-        ideaRepository.save(i2);
-        ideaRepository.save(i3);
-        ideaRepository.save(i4);
-        ideaRepository.save(i5);
+        // ideaRepository.save(i1);
+        // ideaRepository.save(i2);
+        // ideaRepository.save(i3);
+        // ideaRepository.save(i4);
+        // ideaRepository.save(i5);
 
 		System.out.println("コマンドラインランナーを実行しました。");
 	}

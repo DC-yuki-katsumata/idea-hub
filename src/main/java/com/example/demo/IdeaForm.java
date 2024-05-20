@@ -1,20 +1,23 @@
 package com.example.demo;
 
 public class IdeaForm {
+    private String idea;
+    private int themeId; // themeIdフィールドを追加
 
-	private String idea = null;
+    // getters and setters
+    public String getIdea() {
+        return idea;
+    }
 
-	public String getIdea() {
-		return idea;
-	}
+    public void setIdea(String idea) {
+        this.idea = idea;
+    }
 
-	public void setIdea(String idea) {
-		this.idea = idea;
-	}
+    public int getThemeId() {
+        return themeId;
+    }
 
-	public String getTitle() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
+    public void setThemeId(int themeId) {
+        this.themeId = themeId;
+    }
 }

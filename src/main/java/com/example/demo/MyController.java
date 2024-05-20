@@ -56,51 +56,52 @@ public class MyController {
 		return "contact";
 	}
 
-	//	@GetMapping("/idea")
-	//	public String getIdea() {
-	//		return "idea";
-	//	}
+	// @GetMapping("/idea")
+	// public String getIdea() {
+	// return "idea";
+	// }
 
+	// 送信されたアイディアを受け取るところ
 	@PostMapping(value = "/idea", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public String idea(@RequestBody IdeaForm form) {
-		String ideaText = form.getIdea();
-		String title = "適当なタイトル";
-		System.out.println("Received idea: " + ideaText); // コンソールに出力
-
-		// アイディアを保存
-		ideaService.saveIdea(title, ideaText);
-
-		return ideaText;
+	public Idea addIdea(@RequestBody IdeaForm form) {
+	    String ideaText = form.getIdea();
+	    int themeId = form.getThemeId(); // Longからintに変更
+	    System.out.println("Received themeId: " + themeId);
+	    System.out.println("Received ideaText: " + ideaText);
+	    Idea newIdea = ideaService.saveIdea(ideaText, themeId);
+	    return newIdea;
 	}
 
-
+	
+	@GetMapping("/ideas/{themeId}")
+	@ResponseBody
+	public List<Idea> getIdeasByThemeId(@PathVariable int themeId) { // Longからintに変更
+		return ideaService.getIdeasByThemeId(themeId);
+	}
+	
 	// すべてのアイディアテーマを取得
 	@GetMapping("/idea")
 	public String getThemes(Model model) {
 		List<IdeaTheme> themes = ideaThemeService.getAllThemes();
 		model.addAttribute("themes", themes);
 		for (IdeaTheme theme : themes) {
-			System.out.println(theme.getTitle()); // コンソールに出力	
+			System.out.println(theme.getTitle()); // コンソールに出力
 		}
 		return "idea"; // Thymeleafテンプレート名
 	}
-	
-	 @GetMapping("/themes")
-	    public String getAllThemes(Model model) {
-	        List<IdeaTheme> themes = ideaThemeService.getAllThemes();
-	        model.addAttribute("themes", themes);
-	        return "idea";
-	    }
 
-	
-	
+	@GetMapping("/themes")
+	public String getAllThemes(Model model) {
+		List<IdeaTheme> themes = ideaThemeService.getAllThemes();
+		model.addAttribute("themes", themes);
+		return "idea";
+	}
 
-	//	アイディアテーマの追加
+	// アイディアテーマの追加
 	@PostMapping("/themes")
 	@ResponseBody
 	public IdeaTheme addIdeaTheme(@RequestBody IdeaTheme newTheme) {
-		System.out.println("akfjwlkjfoiajwoijwa");
 		System.out.println(newTheme.toString());
 		return ideaThemeService.addTheme(newTheme);
 	}
@@ -117,16 +118,13 @@ public class MyController {
 			return "削除に失敗しました";
 		}
 	}
-	
-	
+
 	@GetMapping("/search")
-    public String searchThemes(@RequestParam("query") String query, Model model) {
-        List<IdeaTheme> themes = ideaThemeService.searchThemes(query);
-        model.addAttribute("themes", themes);
-        return "idea";
-    }
-	
-	
+	public String searchThemes(@RequestParam("query") String query, Model model) {
+		List<IdeaTheme> themes = ideaThemeService.searchThemes(query);
+		model.addAttribute("themes", themes);
+		return "idea";
+	}
 
 	@GetMapping("/persons")
 	public String getPersons(Model model) {
@@ -203,10 +201,10 @@ public class MyController {
 		model.addAttribute("list", service.getPersonList());
 		return "personList";
 	}
-	
-    @GetMapping("/use_restapi")
-    public String index() {
-        return "use_restapi"; // templates/weather.html を返す
-    }
+
+	@GetMapping("/use_restapi")
+	public String index() {
+		return "use_restapi"; // templates/weather.html を返す
+	}
 
 }

@@ -1,35 +1,49 @@
 package com.example.demo;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @Entity
 public class Idea {
-	@Id
-	@GeneratedValue
-	private int id;
-	@NotBlank(message = "Title cannot be empty")
-	@Size(min = 2, max = 30, message = "Title must be between 2 and 30 characters")
-	private String title;
-	
-	private LocalDateTime createdAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String text;
+    private int themeId;
 
-    @NotBlank(message = "Content cannot be empty")
-    private String content;
+    // デフォルトコンストラクタ
+    public Idea() {}
 
-	public Idea(String title, LocalDateTime createdAt, String content) {
-		this.title = title;
-		this.createdAt = createdAt;
-		this.content = content;
-	}
+    // パラメータ付きコンストラクタ
+    public Idea(String text, int themeId) {
+        this.text = text;
+        this.themeId = themeId;
+    }
 
+    // getters and setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getThemeId() {
+        return themeId;
+    }
+
+    public void setThemeId(int themeId) {
+        this.themeId = themeId;
+    }
 }
