@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -65,21 +67,20 @@ public class MyController {
 	@PostMapping(value = "/idea", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Idea addIdea(@RequestBody IdeaForm form) {
-	    String ideaText = form.getIdea();
-	    int themeId = form.getThemeId(); // Longからintに変更
-	    System.out.println("Received themeId: " + themeId);
-	    System.out.println("Received ideaText: " + ideaText);
-	    Idea newIdea = ideaService.saveIdea(ideaText, themeId);
-	    return newIdea;
+		String ideaText = form.getIdea();
+		int themeId = form.getThemeId(); // Longからintに変更
+		System.out.println("Received themeId: " + themeId);
+		System.out.println("Received ideaText: " + ideaText);
+		Idea newIdea = ideaService.saveIdea(ideaText, themeId);
+		return newIdea;
 	}
 
-	
 	@GetMapping("/ideas/{themeId}")
 	@ResponseBody
 	public List<Idea> getIdeasByThemeId(@PathVariable int themeId) { // Longからintに変更
-		return ideaService.getIdeasByThemeId(themeId);
+		return ideaService.findIdeasByThemeId(themeId);
 	}
-	
+
 	// すべてのアイディアテーマを取得
 	@GetMapping("/idea")
 	public String getThemes(Model model) {
@@ -104,6 +105,14 @@ public class MyController {
 	public IdeaTheme addIdeaTheme(@RequestBody IdeaTheme newTheme) {
 		System.out.println(newTheme.toString());
 		return ideaThemeService.addTheme(newTheme);
+	}
+
+	// アイディアのテーマの変更
+	@PutMapping("/themes/{id}/rename")
+	@ResponseBody
+	public ResponseEntity<IdeaTheme> renameTheme(@PathVariable("id") int id, @RequestBody RenameForm form) {
+		IdeaTheme updatedTheme = ideaThemeService.renameTheme(id, form.getNewName());
+		return ResponseEntity.ok(updatedTheme);
 	}
 
 	// アイディアテーマの削除

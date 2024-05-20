@@ -19,7 +19,8 @@ public class IdeaService {
 		return ideaRepository.save(idea);
 	}
 
-	public List<Idea> getIdeasByThemeId(int themeId) { // Longからintに変更
-		return ideaRepository.findByThemeId(themeId);
-	}
+	public List<Idea> findIdeasByThemeId(int themeId) {
+        return ideaRepository.findByThemeId(themeId);
+    }
+
 }

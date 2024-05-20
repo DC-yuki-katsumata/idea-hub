@@ -178,6 +178,13 @@
 			<button type="submit">追加</button>
 		</form>
 	</div>
+	<!-- 名前変更用の入力フィールドを含むフォーム -->
+	<div class="rename-input" id="rename-input" style="display:none;">
+		<form id="rename-form">
+			<input type="text" id="new-name-input" placeholder="新しい名前を入力してください">
+			<button type="submit">変更</button>
+		</form>
+	</div>
 	<div class="context-menu" id="context-menu">
 		<div class="context-menu__item" id="rename">名前を変更</div>
 		<div class="context-menu__item" id="archive">アーカイブ</div>
@@ -308,11 +315,12 @@
 		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script th:src="@{/js/animation.js}"></script>
 	<script>
+		let selectedThemeId = null;  //選択しているアイディアのテーマ
+		let selectedThemeElement = null; // 選択されたテーマの要素
 		document.addEventListener("DOMContentLoaded", function () {
 			var searchInput = document.getElementById("search-input");
 			var searchButton = document.getElementById("search-button");
 			var resetButton = document.getElementById("reset-button"); // リセットボタンの要素を取得
-			let selectedThemeId = null;　//選択しているアイディアのテーマ
 
 
 			// アイディアテーマをクリックしたときの処理
@@ -320,6 +328,11 @@
 				// クリックされた要素が.idea_title_itemの場合に処理を行う
 				if (event.target.closest(".idea_title_item")) {
 					const item = event.target.closest(".idea_title_item");
+					console.log("クリックされたアイテム");
+					console.log(item);
+					selectedThemeElement = item; // selectedThemeElementを設定
+					console.log("selectedThemeElement:", selectedThemeElement);
+					selectedThemeId = item.dataset.id; // selectedThemeIdを設定
 
 					// 既存の選択を解除
 					document.querySelectorAll('.idea_title_item').forEach(function (el) {
@@ -329,7 +342,6 @@
 					// 選択されたアイテムに.selectedクラスを追加
 					item.classList.add('selected');
 
-					selectedThemeId = item.dataset.id;
 					fetch(`/ideas/${selectedThemeId}`)
 						.then(response => response.json())
 						.then(data => {
@@ -541,9 +553,56 @@
 				}
 			});
 
+			// 名前を変更の処理
+			// 名前変更用のイベントリスナーを設定
 			document.getElementById("rename").addEventListener("click", function () {
-				alert("名前を変更");
-				contextMenu.style.display = "none";
+            if (selectedThemeElement) {
+                const titleElement = selectedThemeElement.querySelector('.idea_title_text');
+                const originalTitle = titleElement.textContent;
+                titleElement.setAttribute("contenteditable", "true");
+                titleElement.focus();
+
+                titleElement.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        this.blur();
+                    }
+                });
+
+                titleElement.addEventListener('blur', function () {
+                    const newName = this.textContent.trim();
+                    if (newName && newName !== originalTitle) {
+                        fetch(`/themes/${selectedThemeId}/rename`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ newName: newName })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('テーマが更新されました: ', data);
+                                this.removeAttribute("contenteditable");
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                this.textContent = originalTitle; // エラー時に元のタイトルに戻す
+                                this.removeAttribute("contenteditable");
+                            });
+                    } else {
+                        this.textContent = originalTitle;
+                        this.removeAttribute("contenteditable");
+                    }
+                });
+            }
+            document.getElementById("context-menu").style.display = "none";
+        });
+			// コンテキストメニューを非表示にするコード
+			document.addEventListener("click", function (e) {
+				var contextMenu = document.getElementById("context-menu");
+				if (!contextMenu.contains(e.target) && !e.target.classList.contains("three-point")) {
+					contextMenu.style.display = "none";
+				}
 			});
 
 			document.getElementById("archive").addEventListener("click", function () {

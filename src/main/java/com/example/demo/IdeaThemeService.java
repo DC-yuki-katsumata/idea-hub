@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class IdeaThemeService {
@@ -34,6 +35,13 @@ public class IdeaThemeService {
         } else {
             return null; // または適切なエラーハンドリングを行う
         }
+    }
+
+    @Transactional
+    public IdeaTheme renameTheme(int id, String newName) {
+        IdeaTheme theme = ideaThemeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid theme ID"));
+        theme.setTitle(newName);
+        return ideaThemeRepository.save(theme);
     }
 
     public void deleteTheme(int id) {
