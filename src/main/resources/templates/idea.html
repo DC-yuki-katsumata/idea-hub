@@ -167,7 +167,12 @@
 					<!-- テキストがここに追加されます -->
 					<div class="text_box TextTyping"></div>
 					<div class="heart_icon_box">
-						<img th:src="@{/images/favorite_heart.svg}" width="16" height="16">
+						<svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;">
+							<path
+								d="M9.40743 0C11.7555 0 13.3333 2.235 13.3333 4.32C13.3333 8.5425 6.78519 12 6.66667 12C6.54815 12 0 8.5425 0 4.32C0 2.235 1.57778 0 3.92593 0C5.27408 0 6.15556 0.6825 6.66667 1.2825C7.17778 0.6825 8.05926 0 9.40743 0Z"
+								fill="#9E9EA7" />
+						</svg>
+
 						<p class="heart_number">1</p>
 					</div>
 				</div>
@@ -253,10 +258,7 @@
 			/* キャレットを非表示にする */
 		}
 
-		.text_box {
-			
-
-		}
+		.text_box {}
 
 		.text_box span {
 			position: relative;
@@ -275,7 +277,7 @@
 		.idea-box {
 			background-color: #f3eee5;
 			border-radius: 10px;
-			padding: 100px 0;
+			padding: 100px 30px;
 			margin: 0.2rem;
 
 			display: flex;
@@ -351,6 +353,7 @@
 			background-color: #f1f1f1;
 		}
 	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
 		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script th:src="@{/js/animation.js}"></script>
@@ -362,14 +365,24 @@
 			var searchButton = document.getElementById("search-button");
 			var resetButton = document.getElementById("reset-button"); // リセットボタンの要素を取得
 
+			// heart_icon_boxのクリックイベントを設定する関数
+			function setHeartIconClickEvent() {
+				document.querySelectorAll('.heart_icon_box').forEach(function (heartIconBox) {
+					heartIconBox.addEventListener('click', function () {
+						const img = this.querySelector('img');
+						img.classList.toggle('pink-heart');
+					});
+				});
+			}
+
 
 			// アイディアテーマをクリックしたときの処理
 			document.querySelector(".history").addEventListener("click", function (event) {
 				// クリックされた要素が.idea_title_itemの場合に処理を行う
 				if (event.target.closest(".idea_title_item")) {
 					const item = event.target.closest(".idea_title_item");
-					console.log("クリックされたアイテム");
-					console.log(item);
+
+
 					selectedThemeElement = item; // selectedThemeElementを設定
 					console.log("selectedThemeElement:", selectedThemeElement);
 					selectedThemeId = item.dataset.id; // selectedThemeIdを設定
@@ -382,11 +395,46 @@
 					// 選択されたアイテムに.selectedクラスを追加
 					item.classList.add('selected');
 
+					// heart_icon_boxのクリックイベントを設定
+					item.addEventListener('click', function () {
+						const heartIconBoxes = document.querySelectorAll('.heart_icon_box');
+						heartIconBoxes.forEach(box => {
+							console.log("aaaaaa");
+							box.addEventListener('click', function () {
+
+								const img = this.querySelector('img');
+								gsap.fromTo(img,
+									{ rotation: 0 },
+									{ rotation: 360, duration: 0.5, backgroundColor: 'pink', ease: "elastic.out(1, 0.3)" }
+								);
+							});
+						});
+					});
+
+
 					fetch(`/ideas/${selectedThemeId}`)
 						.then(response => response.json())
 						.then(data => {
-							console.log(data);
 							displayIdeas(data);
+							// heart_icon_boxのクリックイベントを設定
+							document.querySelectorAll('.heart_icon_box').forEach(box => {
+								box.addEventListener('click', function () {
+									const svgPath = this.querySelector('svg path');
+									gsap.to(svgPath, {
+										duration: 0.2,
+										scale: 1.2,
+										transformOrigin: "center center",
+										onComplete: () => {
+											gsap.to(svgPath, {
+												duration: 0.2,
+												scale: 1,
+												fill: "#ea64d9",
+												transformOrigin: "center center"
+											});
+										}
+									});
+								});
+							});
 						})
 						.catch(error => console.error('Error:', error));
 				}
@@ -446,7 +494,7 @@
 			document.querySelector(".message_box").addEventListener("submit", function (e) {
 				e.preventDefault();
 				const ideaText = document.getElementById("message-input").value;
-				console.log(ideaText);
+
 				if (selectedThemeId && ideaText.trim()) {
 					fetch('/idea', {
 						method: 'POST',
@@ -458,6 +506,8 @@
 						.then(response => response.json())
 						.then(data => {
 							displayIdea(data);
+							// 新しいアイディアが追加された後にheart_icon_boxのクリックイベントを設定
+							setHeartIconClickEvent();
 						})
 						.catch(error => console.error('Error:', error));
 				}
@@ -521,7 +571,7 @@
 				var theme = document.getElementById("theme-input").value;
 				if (theme.trim() !== "") {
 					addNewIdeaTheme(theme);
-					console.log(theme);
+
 
 					// フォaームをリセットして入力フィールドを隠す
 					themeForm.reset();
@@ -541,7 +591,7 @@
 			// 親要素にイベントリスナーを追加
 			document.body.addEventListener("click", function (e) {
 				if (e.target.classList.contains("three-point")) {
-					console.log("test");
+
 					e.stopPropagation(); // イベントのバブリングを停止
 					var targetElement = e.target.closest('.idea_title_item');
 					showContextMenu(e, targetElement);

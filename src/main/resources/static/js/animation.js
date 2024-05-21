@@ -43,7 +43,7 @@ function setVerticalPadding(ideaBox) {
 	var padding = Math.max((boxHeight - contentHeight) / 2, 100); // 最低パディングを10pxとする
 	ideaBox.style.paddingTop = padding + 'px';
 	ideaBox.style.paddingBottom = padding + 'px';
-	console.log("boxHeight", boxHeight);
+	// console.log("boxHeight", boxHeight);
 }
 
 
@@ -52,8 +52,6 @@ $(window).on('load', function() {
 	// spanタグを追加する
 	var element = $(".TextTyping");
 	// 3秒後に縦棒のアニメーションを止める
-
-	console.log(element);
 	element.each(function() {
 		var text = $(this).html();
 		var textbox = "";

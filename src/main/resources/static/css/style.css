@@ -204,7 +204,15 @@ div::-webkit-scrollbar-thumb {
 	display: flex;
 	align-items: center;
 	justify-self: flex-end;
+	cursor: pointer;
+	padding: 10px;
 }
+
+.heart_icon_box svg path {
+    transition: fill 0.5s;
+	overflow: visible;
+}
+
 
 .heart_number {
 	padding-left: 10px;
