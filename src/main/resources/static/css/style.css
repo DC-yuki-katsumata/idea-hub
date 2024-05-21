@@ -5,7 +5,7 @@ body {
 	font-optical-sizing: auto;
 }
 
-.container{
+.container {
 	width: 100%;
 	height: 100vh;
 	display: flex;
@@ -45,11 +45,12 @@ body {
 }
 
 .search-container button {
-    padding: 10px;
-    border-radius: 10px;
+	padding: 10px;
+	border-radius: 10px;
 }
+
 .search-container button:hover {
-    background-color: #e7e6e6;
+	background-color: #e7e6e6;
 	cursor: pointer;
 }
 
@@ -122,10 +123,11 @@ div::-webkit-scrollbar-thumb {
 	background-color: #E3E3E3;
 	cursor: pointer
 }
+
 /* サイドバー */
 /* 現在選択しているアイディアテーマ*/
 .idea_title_item.selected {
-    background-color: #E3E3E3;
+	background-color: #E3E3E3;
 }
 
 
@@ -186,6 +188,26 @@ div::-webkit-scrollbar-thumb {
 	margin: 0.2rem;
 	word-wrap: break-word;
 	width: 60%;
+}
+
+
+
+.text_box:after {
+    content: "|";
+    animation: typinganime .8s ease infinite;
+    height: 1em; /* キャレットの高さを1emに固定 */
+    line-height: 1em; /* 行の高さを1emに固定 */
+	align-self: center;
+}
+
+.heart_icon_box {
+	display: flex;
+	align-items: center;
+	justify-self: flex-end;
+}
+
+.heart_number {
+	padding-left: 10px;
 }
 
 #message-input {

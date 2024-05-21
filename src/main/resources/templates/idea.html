@@ -162,6 +162,16 @@
 		</div>
 		<div class="main_area">
 			<div class="main_top notes" id="message-container"></div>
+			<template id="idea-template">
+				<div class="idea-box">
+					<!-- テキストがここに追加されます -->
+					<div class="text_box TextTyping"></div>
+					<div class="heart_icon_box">
+						<img th:src="@{/images/favorite_heart.svg}" width="16" height="16">
+						<p class="heart_number">1</p>
+					</div>
+				</div>
+			</template>
 			<div class="main_bottom">
 
 				<form method="post" th:action="@{/idea}" class="message_box">
@@ -215,20 +225,27 @@
 			height: auto;
 		}
 
+
 		.idea-box span {
 			display: none;
+			align-items: center;
+
+
 		}
 
+
+
 		.TextTyping::after {
-			position: relative;
 			content: "|";
 			animation: typinganime .8s ease infinite;
-			z-index: -1;
 		}
 
 		.TextTyping span.active::after {
+			display: flex;
+			align-items: center;
 			content: "|";
 			animation: typinganime .8s ease infinite;
+
 		}
 
 		.hide-caret::after {
@@ -236,13 +253,35 @@
 			/* キャレットを非表示にする */
 		}
 
+		.text_box {
+			
+
+		}
+
+		.text_box span {
+			position: relative;
+			display: none;
+			opacity: 0;
+			height: 1em;
+			/* 文字の高さを1emに固定 */
+			line-height: 1em;
+			/* 行の高さを1emに固定 */
+			vertical-align: middle;
+			/* 上に揃える */
+			align-self: center;
+		}
+
 
 		.idea-box {
 			background-color: #f3eee5;
 			border-radius: 10px;
-			padding: 10px;
+			padding: 100px 0;
 			margin: 0.2rem;
-			display: block;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: center;
 			width: 300px;
 			height: 300px;
 			max-width: 300px;
@@ -253,6 +292,7 @@
 			overflow-wrap: break-word;
 			/* ボックスの幅を超えたテキストを折り返す */
 			overflow-y: scroll;
+			font-weight: bold;
 
 		}
 
@@ -431,13 +471,15 @@
 					displayIdea(idea);
 				});
 			}
-
-
 			function displayIdea(idea) {
 				const ideaText = idea.text; // 受け取ったデータのtextプロパティを使用
 				const messageContainer = document.getElementById('message-container');
-				const messageBox = document.createElement('div');
-				messageBox.classList.add('idea-box', 'TextTyping');
+				const template = document.getElementById('idea-template');
+				const messageBox = template.content.cloneNode(true).querySelector('.idea-box');
+
+				// text_boxを取得
+				const textBox = messageBox.querySelector('.text_box');
+
 				let textbox = "";
 				ideaText.split('').forEach(function (t) {
 					if (t !== " ") {
@@ -446,14 +488,24 @@
 						textbox += t;
 					}
 				});
-				messageBox.innerHTML = textbox;
+
+				// text_boxにspan要素を追加
+				textBox.innerHTML = textbox;
+
 				messageContainer.appendChild(messageBox);
+
 				setTimeout(() => {
 					setVerticalPadding(messageBox);
 				}, 200);
+
 				TextTypingAnime(30);
 				document.getElementById("message-input").value = "";
 			}
+
+
+
+
+
 
 
 			var newIdea = document.querySelector(".new_idea");
@@ -556,47 +608,47 @@
 			// 名前を変更の処理
 			// 名前変更用のイベントリスナーを設定
 			document.getElementById("rename").addEventListener("click", function () {
-            if (selectedThemeElement) {
-                const titleElement = selectedThemeElement.querySelector('.idea_title_text');
-                const originalTitle = titleElement.textContent;
-                titleElement.setAttribute("contenteditable", "true");
-                titleElement.focus();
+				if (selectedThemeElement) {
+					const titleElement = selectedThemeElement.querySelector('.idea_title_text');
+					const originalTitle = titleElement.textContent;
+					titleElement.setAttribute("contenteditable", "true");
+					titleElement.focus();
 
-                titleElement.addEventListener('keydown', function (event) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        this.blur();
-                    }
-                });
+					titleElement.addEventListener('keydown', function (event) {
+						if (event.key === 'Enter') {
+							event.preventDefault();
+							this.blur();
+						}
+					});
 
-                titleElement.addEventListener('blur', function () {
-                    const newName = this.textContent.trim();
-                    if (newName && newName !== originalTitle) {
-                        fetch(`/themes/${selectedThemeId}/rename`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ newName: newName })
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log('テーマが更新されました: ', data);
-                                this.removeAttribute("contenteditable");
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                this.textContent = originalTitle; // エラー時に元のタイトルに戻す
-                                this.removeAttribute("contenteditable");
-                            });
-                    } else {
-                        this.textContent = originalTitle;
-                        this.removeAttribute("contenteditable");
-                    }
-                });
-            }
-            document.getElementById("context-menu").style.display = "none";
-        });
+					titleElement.addEventListener('blur', function () {
+						const newName = this.textContent.trim();
+						if (newName && newName !== originalTitle) {
+							fetch(`/themes/${selectedThemeId}/rename`, {
+								method: 'PUT',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({ newName: newName })
+							})
+								.then(response => response.json())
+								.then(data => {
+									console.log('テーマが更新されました: ', data);
+									this.removeAttribute("contenteditable");
+								})
+								.catch(error => {
+									console.error('Error:', error);
+									this.textContent = originalTitle; // エラー時に元のタイトルに戻す
+									this.removeAttribute("contenteditable");
+								});
+						} else {
+							this.textContent = originalTitle;
+							this.removeAttribute("contenteditable");
+						}
+					});
+				}
+				document.getElementById("context-menu").style.display = "none";
+			});
 			// コンテキストメニューを非表示にするコード
 			document.addEventListener("click", function (e) {
 				var contextMenu = document.getElementById("context-menu");

@@ -1,20 +1,20 @@
 /**
  * 
  */// TextTypingというクラス名がついている子要素（span）を表示から非表示にする定義
-function TextTypingAnime(animationTime = 100) {
-	$('.TextTyping').each(function() {
-		var elemPos = $(this).offset().top - 50;
-		var scroll = $(window).scrollTop();
-		var windowHeight = $(window).height();
-		var thisChild = "";
-		if (scroll >= elemPos - windowHeight) {
-			thisChild = $(this).children(); // spanタグを取得
-			// spanタグの要素の1つ1つに処理を追加
-			thisChild.each(function(i) {
-				var time = animationTime;
+ function TextTypingAnime(animationTime = 100) {
+    $('.TextTyping').each(function() {
+        var elemPos = $(this).offset().top - 50;
+        var scroll = $(window).scrollTop();
+        var windowHeight = $(window).height();
+        var thisChild = "";
+        if (scroll >= elemPos - windowHeight) {
+            thisChild = $(this).children('span'); // spanタグを取得
+            // spanタグの要素の1つ1つに処理を追加
+            thisChild.each(function(i) {
+                var time = animationTime;
                 // 時差で表示するためにdelayを指定し、その時間後にdisplayとopacityをアニメーションで変更
                 $(this).delay(time * i).queue(function(next) {
-                    $(this).css('display', 'inline').css('opacity', 0).animate({'opacity': 1}, time, function() {
+                    $(this).css('display', 'flex').css('opacity', 0).animate({'opacity': 1}, time, function() {
                         // 最後のspanが表示されたかどうかをチェック
                         if (i === thisChild.length - 1) {
                             // すべてのspan要素が表示された後に2秒後にキャレットを非表示にする
@@ -26,21 +26,21 @@ function TextTypingAnime(animationTime = 100) {
                     next();
                 });
             });
-		} else {
-			thisChild = $(this).children();
-			thisChild.each(function() {
-				$(this).stop(); // delay処理を止める
-				$(this).css('display', 'none'); // spanタグを非表示にする
-			});
-		}
-	});
+        } else {
+            thisChild = $(this).children('span');
+            thisChild.each(function() {
+                $(this).stop(); // delay処理を止める
+                $(this).css('display', 'none'); // spanタグを非表示にする
+            });
+        }
+    });
 }
 
 // idea-boxの高さに応じて上下のパディングを設定する関数
 function setVerticalPadding(ideaBox) {
 	var contentHeight = ideaBox.scrollHeight;
 	var boxHeight = ideaBox.clientHeight;
-	var padding = Math.max((boxHeight - contentHeight) / 2, 10); // 最低パディングを10pxとする
+	var padding = Math.max((boxHeight - contentHeight) / 2, 100); // 最低パディングを10pxとする
 	ideaBox.style.paddingTop = padding + 'px';
 	ideaBox.style.paddingBottom = padding + 'px';
 	console.log("boxHeight", boxHeight);
