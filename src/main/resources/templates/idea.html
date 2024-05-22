@@ -422,13 +422,13 @@
 									const svgPath = this.querySelector('svg path');
 									gsap.to(svgPath, {
 										duration: 0.2,
-										scale: 1.2,
+										scale: 1.3,
+										fill: "#ea64d9",
 										transformOrigin: "center center",
 										onComplete: () => {
 											gsap.to(svgPath, {
 												duration: 0.2,
 												scale: 1,
-												fill: "#ea64d9",
 												transformOrigin: "center center"
 											});
 										}
