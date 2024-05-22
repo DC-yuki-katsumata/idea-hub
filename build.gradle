@@ -31,9 +31,19 @@ dependencies {
   	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.demo.SampleApplication' // メインクラスを指定
+        )
+    }
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
 tasks.withType(JavaCompile) {
   options.compilerArgs << '-parameters'
 }
+
+
