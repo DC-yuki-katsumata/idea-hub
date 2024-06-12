@@ -7,8 +7,10 @@ plugins {
 group = 'com.dreamcareer'
 version = '0.0.1-SNAPSHOT'
 
+
 java {
 	sourceCompatibility = '17'
+	targetCompatibility = '17'
 }
 
 
@@ -25,8 +27,17 @@ dependencies {
   	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
   	annotationProcessor 'org.projectlombok:lombok'
   	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  	 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  	runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'mysql:mysql-connector-java:8.0.30'
+    implementation 'org.hibernate:hibernate-core:6.4.4.Final'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.example.demo.SampleApplication' // メインクラスを指定
+        )
+    }
 }
 
 tasks.named('test') {
@@ -35,3 +46,5 @@ tasks.named('test') {
 tasks.withType(JavaCompile) {
   options.compilerArgs << '-parameters'
 }
+
+
